@@ -1,0 +1,27 @@
+name: Deploy to Production
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy-prod:
+    runs-on: ubuntu-latest
+    environment:
+      name: production
+      url: https://your-production-url.com
+
+    steps:
+    - name: Confirm Deployment
+      run: echo "Starting manual production deployment"
+
+    - name: Deploy to production
+      run: |
+        echo "Deploying to production..."
+        ssh user@production-server 'docker pull ghcr.io/your-org/your-repo:latest && docker restart app'
+
+    - name: Notify Slack
+      uses: rtCamp/action-slack-notify@v2
+      env:
+        SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+        SLACK_COLOR: '#FFD700'
+        SLACK_MESSAGE: "🚀 Manually deployed to *production*"
